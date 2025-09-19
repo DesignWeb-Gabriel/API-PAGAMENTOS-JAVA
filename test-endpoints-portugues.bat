@@ -64,6 +64,11 @@ echo - Enums: MetodoPagamento, StatusPagamento
 echo - DTOs: PagamentoRequestDTO, PagamentoResponseDTO
 echo - Excecoes: PagamentoInvalidoException, etc.
 echo ========================================
+echo Maven Wrapper incluido:
+echo - Para compilar: mvnw.cmd clean compile
+echo - Para executar: mvnw.cmd spring-boot:run
+echo - Para testar: mvnw.cmd test
+echo ========================================
 echo Acesse o Swagger UI em: http://localhost:8081/swagger-ui.html
 echo Acesse o Console H2 em: http://localhost:8081/h2-console
 echo ========================================
