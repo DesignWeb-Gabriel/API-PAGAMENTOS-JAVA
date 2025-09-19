@@ -41,5 +41,5 @@ server:
 # Configurações de logging
 logging:
   level:
-    com.payment: DEBUG
+    com.pagamento: DEBUG
     org.springframework.web: DEBUG

@@ -132,7 +132,7 @@ public class PaymentService {
     private void validateStatusTransition(PaymentStatus currentStatus, PaymentStatus newStatus) {
         switch (currentStatus) {
             case PENDENTE_PROCESSAMENTO:
-                if (newStatus != PaymentStatus.PROCESSADO_SUCESSO && 
+                if (newStatus != PaymentStatus.PROCESSADO_SUCESSO &&
                     newStatus != PaymentStatus.PROCESSADO_FALHA) {
                     throw new InvalidStatusTransitionException(currentStatus, newStatus);
                 }

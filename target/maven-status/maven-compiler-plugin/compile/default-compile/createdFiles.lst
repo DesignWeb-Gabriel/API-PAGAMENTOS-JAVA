@@ -1,0 +1,17 @@
+com\pagamento\excecao\TratadorGlobalExcecoes.class
+com\pagamento\dto\ErroResponseDTO.class
+com\pagamento\dto\PagamentoRequestDTO.class
+com\pagamento\excecao\TransicaoStatusInvalidaException.class
+com\pagamento\servico\ServicoPagamento.class
+com\pagamento\enums\StatusPagamento.class
+com\pagamento\dto\AtualizacaoStatusRequestDTO.class
+com\pagamento\repositorio\RepositorioPagamento.class
+com\pagamento\servico\ServicoPagamento$1.class
+com\pagamento\entidade\Pagamento.class
+com\pagamento\controlador\ControladorPagamento.class
+com\pagamento\configuracao\ConfiguracaoOpenApi.class
+com\pagamento\dto\PagamentoResponseDTO.class
+com\pagamento\enums\MetodoPagamento.class
+com\pagamento\excecao\PagamentoNaoEncontradoException.class
+com\pagamento\excecao\PagamentoInvalidoException.class
+com\pagamento\AplicacaoPagamento.class

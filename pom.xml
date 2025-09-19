@@ -12,8 +12,8 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.payment</groupId>
-    <artifactId>api-payment</artifactId>
+    <groupId>com.pagamento</groupId>
+    <artifactId>api-pagamento</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
