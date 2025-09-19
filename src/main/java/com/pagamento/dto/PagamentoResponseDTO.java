@@ -1,9 +1,6 @@
 package com.pagamento.dto;
 
 import com.pagamento.entidade.Pagamento;
-import com.pagamento.enums.MetodoPagamento;
-import com.pagamento.enums.StatusPagamento;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
