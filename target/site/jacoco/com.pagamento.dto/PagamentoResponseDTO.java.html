@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagamentoResponseDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.dto</a> &gt; <span class="el_source">PagamentoResponseDTO.java</span></div><h1>PagamentoResponseDTO.java</h1><pre class="source lang-java linenums">package com.pagamento.dto;
+
+import com.pagamento.entidade.Pagamento;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class PagamentoResponseDTO {
+
+    private Long id;
+    private Integer codigoDebito;
+    private String cpfCnpj;
+    private String metodoPagamento;
+    private String numeroCartao;
+    private BigDecimal valorPagamento;
+    private String status;
+    private LocalDateTime dataCriacao;
+    private LocalDateTime dataAtualizacao;
+
+<span class="fc" id="L19">    public PagamentoResponseDTO() {}</span>
+
+<span class="fc" id="L21">    public PagamentoResponseDTO(Pagamento pagamento) {</span>
+<span class="fc" id="L22">        this.id = pagamento.getId();</span>
+<span class="fc" id="L23">        this.codigoDebito = pagamento.getCodigoDebito();</span>
+<span class="fc" id="L24">        this.cpfCnpj = pagamento.getCpfCnpj();</span>
+<span class="fc" id="L25">        this.metodoPagamento = pagamento.getMetodoPagamento().getValor();</span>
+<span class="fc" id="L26">        this.numeroCartao = mascaraNumeroCartao(pagamento.getNumeroCartao());</span>
+<span class="fc" id="L27">        this.valorPagamento = pagamento.getValorPagamento();</span>
+<span class="fc" id="L28">        this.status = pagamento.getStatus().getDescricao();</span>
+<span class="fc" id="L29">        this.dataCriacao = pagamento.getDataCriacao();</span>
+<span class="fc" id="L30">        this.dataAtualizacao = pagamento.getDataAtualizacao();</span>
+<span class="fc" id="L31">    }</span>
+
+    private String mascaraNumeroCartao(String numeroCartao) {
+<span class="pc bpc" id="L34" title="1 of 4 branches missed.">        if (numeroCartao == null || numeroCartao.trim().isEmpty()) {</span>
+<span class="fc" id="L35">            return null;</span>
+        }
+        
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (numeroCartao.length() &lt; 4) {</span>
+<span class="nc" id="L39">            return numeroCartao;</span>
+        }
+        
+<span class="fc" id="L42">        String ultimosQuatro = numeroCartao.substring(numeroCartao.length() - 4);</span>
+<span class="fc" id="L43">        return &quot;**** **** **** &quot; + ultimosQuatro;</span>
+    }
+
+    // Getters e Setters
+    public Long getId() {
+<span class="fc" id="L48">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L52">        this.id = id;</span>
+<span class="fc" id="L53">    }</span>
+
+    public Integer getCodigoDebito() {
+<span class="fc" id="L56">        return codigoDebito;</span>
+    }
+
+    public void setCodigoDebito(Integer codigoDebito) {
+<span class="fc" id="L60">        this.codigoDebito = codigoDebito;</span>
+<span class="fc" id="L61">    }</span>
+
+    public String getCpfCnpj() {
+<span class="fc" id="L64">        return cpfCnpj;</span>
+    }
+
+    public void setCpfCnpj(String cpfCnpj) {
+<span class="fc" id="L68">        this.cpfCnpj = cpfCnpj;</span>
+<span class="fc" id="L69">    }</span>
+
+    public String getMetodoPagamento() {
+<span class="fc" id="L72">        return metodoPagamento;</span>
+    }
+
+    public void setMetodoPagamento(String metodoPagamento) {
+<span class="fc" id="L76">        this.metodoPagamento = metodoPagamento;</span>
+<span class="fc" id="L77">    }</span>
+
+    public String getNumeroCartao() {
+<span class="fc" id="L80">        return numeroCartao;</span>
+    }
+
+    public void setNumeroCartao(String numeroCartao) {
+<span class="fc" id="L84">        this.numeroCartao = numeroCartao;</span>
+<span class="fc" id="L85">    }</span>
+
+    public BigDecimal getValorPagamento() {
+<span class="fc" id="L88">        return valorPagamento;</span>
+    }
+
+    public void setValorPagamento(BigDecimal valorPagamento) {
+<span class="fc" id="L92">        this.valorPagamento = valorPagamento;</span>
+<span class="fc" id="L93">    }</span>
+
+    public String getStatus() {
+<span class="fc" id="L96">        return status;</span>
+    }
+
+    public void setStatus(String status) {
+<span class="fc" id="L100">        this.status = status;</span>
+<span class="fc" id="L101">    }</span>
+
+    public LocalDateTime getDataCriacao() {
+<span class="fc" id="L104">        return dataCriacao;</span>
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+<span class="fc" id="L108">        this.dataCriacao = dataCriacao;</span>
+<span class="fc" id="L109">    }</span>
+
+    public LocalDateTime getDataAtualizacao() {
+<span class="fc" id="L112">        return dataAtualizacao;</span>
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+<span class="fc" id="L116">        this.dataAtualizacao = dataAtualizacao;</span>
+<span class="fc" id="L117">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagamentoRequestDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.dto</a> &gt; <span class="el_source">PagamentoRequestDTO.java</span></div><h1>PagamentoRequestDTO.java</h1><pre class="source lang-java linenums">package com.pagamento.dto;
+
+import com.pagamento.enums.MetodoPagamento;
+
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
+
+public class PagamentoRequestDTO {
+
+    @NotNull(message = &quot;Código do débito é obrigatório&quot;)
+    @Positive(message = &quot;Código do débito deve ser um número positivo&quot;)
+    private Integer codigoDebito;
+
+    @NotBlank(message = &quot;CPF/CNPJ é obrigatório&quot;)
+    @Pattern(regexp = &quot;^\\d{11}$|^\\d{14}$&quot;, message = &quot;CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos&quot;)
+    private String cpfCnpj;
+
+    @NotNull(message = &quot;Método de pagamento é obrigatório&quot;)
+    private MetodoPagamento metodoPagamento;
+
+    @Pattern(regexp = &quot;^\\d{13,19}$&quot;, message = &quot;Número do cartão deve ter entre 13 e 19 dígitos&quot;)
+    private String numeroCartao;
+
+    @NotNull(message = &quot;Valor do pagamento é obrigatório&quot;)
+    @DecimalMin(value = &quot;0.01&quot;, message = &quot;Valor do pagamento deve ser maior que zero&quot;)
+    @Digits(integer = 8, fraction = 2, message = &quot;Valor deve ter no máximo 8 dígitos inteiros e 2 decimais&quot;)
+    private BigDecimal valorPagamento;
+
+<span class="fc" id="L29">    public PagamentoRequestDTO() {}</span>
+
+    public PagamentoRequestDTO(Integer codigoDebito, String cpfCnpj, MetodoPagamento metodoPagamento,
+<span class="nc" id="L32">                           String numeroCartao, BigDecimal valorPagamento) {</span>
+<span class="nc" id="L33">        this.codigoDebito = codigoDebito;</span>
+<span class="nc" id="L34">        this.cpfCnpj = cpfCnpj;</span>
+<span class="nc" id="L35">        this.metodoPagamento = metodoPagamento;</span>
+<span class="nc" id="L36">        this.numeroCartao = numeroCartao;</span>
+<span class="nc" id="L37">        this.valorPagamento = valorPagamento;</span>
+<span class="nc" id="L38">    }</span>
+
+    // Getters e Setters
+    public Integer getCodigoDebito() {
+<span class="fc" id="L42">        return codigoDebito;</span>
+    }
+
+    public void setCodigoDebito(Integer codigoDebito) {
+<span class="fc" id="L46">        this.codigoDebito = codigoDebito;</span>
+<span class="fc" id="L47">    }</span>
+
+    public String getCpfCnpj() {
+<span class="fc" id="L50">        return cpfCnpj;</span>
+    }
+
+    public void setCpfCnpj(String cpfCnpj) {
+<span class="fc" id="L54">        this.cpfCnpj = cpfCnpj;</span>
+<span class="fc" id="L55">    }</span>
+
+    public MetodoPagamento getMetodoPagamento() {
+<span class="fc" id="L58">        return metodoPagamento;</span>
+    }
+
+    public void setMetodoPagamento(MetodoPagamento metodoPagamento) {
+<span class="fc" id="L62">        this.metodoPagamento = metodoPagamento;</span>
+<span class="fc" id="L63">    }</span>
+
+    public String getNumeroCartao() {
+<span class="fc" id="L66">        return numeroCartao;</span>
+    }
+
+    public void setNumeroCartao(String numeroCartao) {
+<span class="fc" id="L70">        this.numeroCartao = numeroCartao;</span>
+<span class="fc" id="L71">    }</span>
+
+    public BigDecimal getValorPagamento() {
+<span class="fc" id="L74">        return valorPagamento;</span>
+    }
+
+    public void setValorPagamento(BigDecimal valorPagamento) {
+<span class="fc" id="L78">        this.valorPagamento = valorPagamento;</span>
+<span class="fc" id="L79">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

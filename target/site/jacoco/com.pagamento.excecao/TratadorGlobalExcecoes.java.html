@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TratadorGlobalExcecoes.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.excecao</a> &gt; <span class="el_source">TratadorGlobalExcecoes.java</span></div><h1>TratadorGlobalExcecoes.java</h1><pre class="source lang-java linenums">package com.pagamento.excecao;
+
+import com.pagamento.dto.ErroResponseDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestControllerAdvice
+<span class="fc" id="L19">public class TratadorGlobalExcecoes {</span>
+
+    @ExceptionHandler(PagamentoNaoEncontradoException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarPagamentoNaoEncontradoException(
+            PagamentoNaoEncontradoException ex, WebRequest request) {
+        
+<span class="fc" id="L25">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="fc" id="L26">            HttpStatus.NOT_FOUND.value(),</span>
+            &quot;Not Found&quot;,
+<span class="fc" id="L28">            ex.getMessage(),</span>
+<span class="fc" id="L29">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;)</span>
+        );
+        
+<span class="fc" id="L32">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);</span>
+    }
+
+    @ExceptionHandler(TransicaoStatusInvalidaException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarTransicaoStatusInvalidaException(
+            TransicaoStatusInvalidaException ex, WebRequest request) {
+        
+<span class="fc" id="L39">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="fc" id="L40">            HttpStatus.BAD_REQUEST.value(),</span>
+            &quot;Bad Request&quot;,
+<span class="fc" id="L42">            ex.getMessage(),</span>
+<span class="fc" id="L43">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;)</span>
+        );
+        
+<span class="fc" id="L46">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);</span>
+    }
+
+    @ExceptionHandler(PagamentoInvalidoException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarPagamentoInvalidoException(
+            PagamentoInvalidoException ex, WebRequest request) {
+        
+<span class="fc" id="L53">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="fc" id="L54">            HttpStatus.BAD_REQUEST.value(),</span>
+            &quot;Bad Request&quot;,
+<span class="fc" id="L56">            ex.getMessage(),</span>
+<span class="fc" id="L57">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;)</span>
+        );
+        
+<span class="fc" id="L60">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);</span>
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarExcecaoValidacao(
+            MethodArgumentNotValidException ex, WebRequest request) {
+        
+<span class="nc" id="L67">        List&lt;String&gt; detalhes = ex.getBindingResult()</span>
+<span class="nc" id="L68">                .getFieldErrors()</span>
+<span class="nc" id="L69">                .stream()</span>
+<span class="nc" id="L70">                .map(erro -&gt; erro.getField() + &quot;: &quot; + erro.getDefaultMessage())</span>
+<span class="nc" id="L71">                .collect(Collectors.toList());</span>
+        
+<span class="nc" id="L73">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="nc" id="L74">            HttpStatus.BAD_REQUEST.value(),</span>
+            &quot;Validation Failed&quot;,
+            &quot;Dados inválidos fornecidos&quot;,
+<span class="nc" id="L77">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;),</span>
+            detalhes
+        );
+        
+<span class="nc" id="L81">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);</span>
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarExcecaoViolacaoRestricao(
+            ConstraintViolationException ex, WebRequest request) {
+        
+<span class="nc" id="L88">        List&lt;String&gt; detalhes = ex.getConstraintViolations()</span>
+<span class="nc" id="L89">                .stream()</span>
+<span class="nc" id="L90">                .map(ConstraintViolation::getMessage)</span>
+<span class="nc" id="L91">                .collect(Collectors.toList());</span>
+        
+<span class="nc" id="L93">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="nc" id="L94">            HttpStatus.BAD_REQUEST.value(),</span>
+            &quot;Validation Failed&quot;,
+            &quot;Dados inválidos fornecidos&quot;,
+<span class="nc" id="L97">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;),</span>
+            detalhes
+        );
+        
+<span class="nc" id="L101">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);</span>
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarExcecaoMensagemNaoLegivel(
+            HttpMessageNotReadableException ex, WebRequest request) {
+        
+<span class="nc" id="L108">        String mensagem = &quot;Formato JSON inválido ou campos com tipos incorretos&quot;;</span>
+        
+        // Tenta extrair informação mais específica do erro
+<span class="nc bnc" id="L111" title="All 4 branches missed.">        if (ex.getCause() != null &amp;&amp; ex.getCause().getMessage() != null) {</span>
+<span class="nc" id="L112">            String mensagemCausa = ex.getCause().getMessage();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (mensagemCausa.contains(&quot;MetodoPagamento&quot;)) {</span>
+<span class="nc" id="L114">                mensagem = &quot;Método de pagamento inválido. Use: boleto, pix, cartao_credito ou cartao_debito&quot;;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            } else if (mensagemCausa.contains(&quot;StatusPagamento&quot;)) {</span>
+<span class="nc" id="L116">                mensagem = &quot;Status de pagamento inválido&quot;;</span>
+            }
+        }
+        
+<span class="nc" id="L120">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="nc" id="L121">            HttpStatus.BAD_REQUEST.value(),</span>
+            &quot;Bad Request&quot;,
+            mensagem,
+<span class="nc" id="L124">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;)</span>
+        );
+        
+<span class="nc" id="L127">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);</span>
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarExcecaoTipoArgumentoIncorreto(
+            MethodArgumentTypeMismatchException ex, WebRequest request) {
+        
+<span class="nc" id="L134">        Class&lt;?&gt; tipoRequerido = ex.getRequiredType();</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        String nomeTipo = tipoRequerido != null ? tipoRequerido.getSimpleName() : &quot;desconhecido&quot;;</span>
+<span class="nc" id="L136">        String mensagem = String.format(&quot;Parâmetro '%s' deve ser do tipo %s&quot;, </span>
+<span class="nc" id="L137">                                     ex.getName(), nomeTipo);</span>
+        
+<span class="nc" id="L139">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="nc" id="L140">            HttpStatus.BAD_REQUEST.value(),</span>
+            &quot;Bad Request&quot;,
+            mensagem,
+<span class="nc" id="L143">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;)</span>
+        );
+        
+<span class="nc" id="L146">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ErroResponseDTO&gt; tratarExcecaoGenerica(
+            Exception ex, WebRequest request) {
+        
+<span class="nc" id="L153">        ErroResponseDTO erro = new ErroResponseDTO(</span>
+<span class="nc" id="L154">            HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
+            &quot;Internal Server Error&quot;,
+            &quot;Ocorreu um erro interno no servidor&quot;,
+<span class="nc" id="L157">            request.getDescription(false).replace(&quot;uri=&quot;, &quot;&quot;)</span>
+        );
+        
+<span class="nc" id="L160">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

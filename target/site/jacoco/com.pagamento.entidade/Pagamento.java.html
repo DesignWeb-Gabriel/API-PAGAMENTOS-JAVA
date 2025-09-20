@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Pagamento.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.entidade</a> &gt; <span class="el_source">Pagamento.java</span></div><h1>Pagamento.java</h1><pre class="source lang-java linenums">package com.pagamento.entidade;
+
+import com.pagamento.enums.MetodoPagamento;
+import com.pagamento.enums.StatusPagamento;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = &quot;payments&quot;)
+public class Pagamento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    @Column(name = &quot;codigo_debito&quot;)
+    private Integer codigoDebito;
+
+    @NotNull
+    @Column(name = &quot;cpf_cnpj&quot;, length = 14)
+    private String cpfCnpj;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = &quot;metodo_pagamento&quot;)
+    private MetodoPagamento metodoPagamento;
+
+    @Column(name = &quot;numero_cartao&quot;, length = 20)
+    private String numeroCartao;
+
+    @NotNull
+    @Positive
+    @Column(name = &quot;valor_pagamento&quot;, precision = 10, scale = 2)
+    private BigDecimal valorPagamento;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = &quot;status&quot;)
+    private StatusPagamento status;
+
+    @Column(name = &quot;data_criacao&quot;)
+    private LocalDateTime dataCriacao;
+
+    @Column(name = &quot;data_atualizacao&quot;)
+    private LocalDateTime dataAtualizacao;
+
+<span class="fc" id="L52">    @Column(name = &quot;ativo&quot;)</span>
+<span class="fc" id="L53">    private Boolean ativo = true;</span>
+
+<span class="fc" id="L55">    public Pagamento() {</span>
+<span class="fc" id="L56">        this.status = StatusPagamento.PENDENTE_PROCESSAMENTO;</span>
+<span class="fc" id="L57">        this.dataCriacao = LocalDateTime.now();</span>
+<span class="fc" id="L58">        this.dataAtualizacao = LocalDateTime.now();</span>
+<span class="fc" id="L59">        this.ativo = true;</span>
+<span class="fc" id="L60">    }</span>
+
+    public Pagamento(Integer codigoDebito, String cpfCnpj, MetodoPagamento metodoPagamento, 
+                   String numeroCartao, BigDecimal valorPagamento) {
+<span class="fc" id="L64">        this();</span>
+<span class="fc" id="L65">        this.codigoDebito = codigoDebito;</span>
+<span class="fc" id="L66">        this.cpfCnpj = cpfCnpj;</span>
+<span class="fc" id="L67">        this.metodoPagamento = metodoPagamento;</span>
+<span class="fc" id="L68">        this.numeroCartao = numeroCartao;</span>
+<span class="fc" id="L69">        this.valorPagamento = valorPagamento;</span>
+<span class="fc" id="L70">    }</span>
+
+    @PreUpdate
+    public void preUpdate() {
+<span class="nc" id="L74">        this.dataAtualizacao = LocalDateTime.now();</span>
+<span class="nc" id="L75">    }</span>
+
+    // Getters e Setters
+    public Long getId() {
+<span class="fc" id="L79">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L83">        this.id = id;</span>
+<span class="fc" id="L84">    }</span>
+
+    public Integer getCodigoDebito() {
+<span class="fc" id="L87">        return codigoDebito;</span>
+    }
+
+    public void setCodigoDebito(Integer codigoDebito) {
+<span class="nc" id="L91">        this.codigoDebito = codigoDebito;</span>
+<span class="nc" id="L92">    }</span>
+
+    public String getCpfCnpj() {
+<span class="fc" id="L95">        return cpfCnpj;</span>
+    }
+
+    public void setCpfCnpj(String cpfCnpj) {
+<span class="nc" id="L99">        this.cpfCnpj = cpfCnpj;</span>
+<span class="nc" id="L100">    }</span>
+
+    public MetodoPagamento getMetodoPagamento() {
+<span class="fc" id="L103">        return metodoPagamento;</span>
+    }
+
+    public void setMetodoPagamento(MetodoPagamento metodoPagamento) {
+<span class="nc" id="L107">        this.metodoPagamento = metodoPagamento;</span>
+<span class="nc" id="L108">    }</span>
+
+    public String getNumeroCartao() {
+<span class="fc" id="L111">        return numeroCartao;</span>
+    }
+
+    public void setNumeroCartao(String numeroCartao) {
+<span class="nc" id="L115">        this.numeroCartao = numeroCartao;</span>
+<span class="nc" id="L116">    }</span>
+
+    public BigDecimal getValorPagamento() {
+<span class="fc" id="L119">        return valorPagamento;</span>
+    }
+
+    public void setValorPagamento(BigDecimal valorPagamento) {
+<span class="nc" id="L123">        this.valorPagamento = valorPagamento;</span>
+<span class="nc" id="L124">    }</span>
+
+    public StatusPagamento getStatus() {
+<span class="fc" id="L127">        return status;</span>
+    }
+
+    public void setStatus(StatusPagamento status) {
+<span class="fc" id="L131">        this.status = status;</span>
+<span class="fc" id="L132">        this.dataAtualizacao = LocalDateTime.now();</span>
+<span class="fc" id="L133">    }</span>
+
+    public LocalDateTime getDataCriacao() {
+<span class="fc" id="L136">        return dataCriacao;</span>
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+<span class="nc" id="L140">        this.dataCriacao = dataCriacao;</span>
+<span class="nc" id="L141">    }</span>
+
+    public LocalDateTime getDataAtualizacao() {
+<span class="fc" id="L144">        return dataAtualizacao;</span>
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+<span class="nc" id="L148">        this.dataAtualizacao = dataAtualizacao;</span>
+<span class="nc" id="L149">    }</span>
+
+    public Boolean getAtivo() {
+<span class="fc" id="L152">        return ativo;</span>
+    }
+
+    public void setAtivo(Boolean ativo) {
+<span class="fc" id="L156">        this.ativo = ativo;</span>
+<span class="fc" id="L157">        this.dataAtualizacao = LocalDateTime.now();</span>
+<span class="fc" id="L158">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MetodoPagamento.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.enums</a> &gt; <span class="el_source">MetodoPagamento.java</span></div><h1>MetodoPagamento.java</h1><pre class="source lang-java linenums">package com.pagamento.enums;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+
+<span class="fc" id="L5">public enum MetodoPagamento {</span>
+<span class="fc" id="L6">    BOLETO(&quot;boleto&quot;),</span>
+<span class="fc" id="L7">    PIX(&quot;pix&quot;),</span>
+<span class="fc" id="L8">    CARTAO_CREDITO(&quot;cartao_credito&quot;),</span>
+<span class="fc" id="L9">    CARTAO_DEBITO(&quot;cartao_debito&quot;);</span>
+
+    private final String valor;
+
+<span class="fc" id="L13">    MetodoPagamento(String valor) {</span>
+<span class="fc" id="L14">        this.valor = valor;</span>
+<span class="fc" id="L15">    }</span>
+
+    @JsonValue
+    public String getValor() {
+<span class="fc" id="L19">        return valor;</span>
+    }
+
+    public static MetodoPagamento fromValor(String valor) {
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        for (MetodoPagamento metodo : MetodoPagamento.values()) {</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">            if (metodo.valor.equals(valor)) {</span>
+<span class="nc" id="L25">                return metodo;</span>
+            }
+        }
+<span class="nc" id="L28">        throw new IllegalArgumentException(&quot;Método de pagamento inválido: &quot; + valor);</span>
+    }
+
+    public boolean isPagamentoComCartao() {
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        return this == CARTAO_CREDITO || this == CARTAO_DEBITO;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

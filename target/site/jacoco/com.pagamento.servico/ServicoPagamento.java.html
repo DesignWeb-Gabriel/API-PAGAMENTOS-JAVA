@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServicoPagamento.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.servico</a> &gt; <span class="el_source">ServicoPagamento.java</span></div><h1>ServicoPagamento.java</h1><pre class="source lang-java linenums">package com.pagamento.servico;
+
+import com.pagamento.dto.PagamentoRequestDTO;
+import com.pagamento.dto.PagamentoResponseDTO;
+import com.pagamento.entidade.Pagamento;
+import com.pagamento.enums.StatusPagamento;
+import com.pagamento.excecao.PagamentoInvalidoException;
+import com.pagamento.excecao.PagamentoNaoEncontradoException;
+import com.pagamento.excecao.TransicaoStatusInvalidaException;
+import com.pagamento.repositorio.RepositorioPagamento;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+public class ServicoPagamento {
+
+    private final RepositorioPagamento repositorioPagamento;
+
+<span class="fc" id="L23">    public ServicoPagamento(RepositorioPagamento repositorioPagamento) {</span>
+<span class="fc" id="L24">        this.repositorioPagamento = repositorioPagamento;</span>
+<span class="fc" id="L25">    }</span>
+
+    
+    public PagamentoResponseDTO criarPagamento(PagamentoRequestDTO request) {
+<span class="fc" id="L29">        validarRequisicaoPagamento(request);</span>
+        
+<span class="fc" id="L31">        Pagamento pagamento = new Pagamento(</span>
+<span class="fc" id="L32">            request.getCodigoDebito(),</span>
+<span class="fc" id="L33">            request.getCpfCnpj(),</span>
+<span class="fc" id="L34">            request.getMetodoPagamento(),</span>
+<span class="fc" id="L35">            request.getNumeroCartao(),</span>
+<span class="fc" id="L36">            request.getValorPagamento()</span>
+        );
+
+<span class="fc" id="L39">        Pagamento pagamentoSalvo = repositorioPagamento.save(pagamento);</span>
+<span class="fc" id="L40">        return new PagamentoResponseDTO(pagamentoSalvo);</span>
+    }
+
+    
+    @Transactional(readOnly = true)
+    public List&lt;PagamentoResponseDTO&gt; listarTodosPagamentos() {
+<span class="fc" id="L46">        return repositorioPagamento.findByAtivoTrue()</span>
+<span class="fc" id="L47">                .stream()</span>
+<span class="fc" id="L48">                .map(PagamentoResponseDTO::new)</span>
+<span class="fc" id="L49">                .collect(Collectors.toList());</span>
+    }
+
+    
+    @Transactional(readOnly = true)
+    public List&lt;PagamentoResponseDTO&gt; buscarPagamentos(Integer codigoDebito, String cpfCnpj, StatusPagamento status) {
+<span class="fc" id="L55">        return repositorioPagamento.encontrarComFiltros(codigoDebito, cpfCnpj, status)</span>
+<span class="fc" id="L56">                .stream()</span>
+<span class="fc" id="L57">                .map(PagamentoResponseDTO::new)</span>
+<span class="fc" id="L58">                .collect(Collectors.toList());</span>
+    }
+
+    
+    @Transactional(readOnly = true)
+    public PagamentoResponseDTO obterPagamentoPorId(Long id) {
+<span class="fc" id="L64">        Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)</span>
+<span class="fc" id="L65">                .orElseThrow(() -&gt; new PagamentoNaoEncontradoException(id));</span>
+<span class="fc" id="L66">        return new PagamentoResponseDTO(pagamento);</span>
+    }
+
+    
+    public PagamentoResponseDTO atualizarStatusPagamento(Long id, StatusPagamento novoStatus) {
+<span class="fc" id="L71">        Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)</span>
+<span class="pc" id="L72">                .orElseThrow(() -&gt; new PagamentoNaoEncontradoException(id));</span>
+
+<span class="fc" id="L74">        validarTransicaoStatus(pagamento.getStatus(), novoStatus);</span>
+        
+<span class="fc" id="L76">        pagamento.setStatus(novoStatus);</span>
+<span class="fc" id="L77">        Pagamento pagamentoAtualizado = repositorioPagamento.save(pagamento);</span>
+        
+<span class="fc" id="L79">        return new PagamentoResponseDTO(pagamentoAtualizado);</span>
+    }
+
+    
+    public void excluirPagamento(Long id) {
+<span class="fc" id="L84">        Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)</span>
+<span class="fc" id="L85">                .orElseThrow(() -&gt; new PagamentoNaoEncontradoException(id));</span>
+
+        // Só pode excluir se estiver pendente de processamento
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (pagamento.getStatus() != StatusPagamento.PENDENTE_PROCESSAMENTO) {</span>
+<span class="fc" id="L89">            throw new PagamentoInvalidoException(</span>
+                &quot;Só é possível excluir pagamentos com status 'Pendente de Processamento'&quot;
+            );
+        }
+
+<span class="fc" id="L94">        pagamento.setAtivo(false);</span>
+<span class="fc" id="L95">        repositorioPagamento.save(pagamento);</span>
+<span class="fc" id="L96">    }</span>
+
+    
+    private void validarRequisicaoPagamento(PagamentoRequestDTO request) {
+        
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (request.getMetodoPagamento().isPagamentoComCartao()) {</span>
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">            if (request.getNumeroCartao() == null || request.getNumeroCartao().trim().isEmpty()) {</span>
+<span class="fc" id="L103">                throw new PagamentoInvalidoException(</span>
+                    &quot;Número do cartão é obrigatório para pagamentos com cartão de crédito ou débito&quot;
+                );
+            }
+        } else {
+           
+<span class="pc bpc" id="L109" title="1 of 4 branches missed.">            if (request.getNumeroCartao() != null &amp;&amp; !request.getNumeroCartao().trim().isEmpty()) {</span>
+<span class="fc" id="L110">                throw new PagamentoInvalidoException(</span>
+                    &quot;Número do cartão não deve ser informado para pagamentos que não sejam com cartão&quot;
+                );
+            }
+        }
+<span class="fc" id="L115">    }</span>
+
+    
+    private void validarTransicaoStatus(StatusPagamento statusAtual, StatusPagamento novoStatus) {
+<span class="pc bpc" id="L119" title="1 of 4 branches missed.">        switch (statusAtual) {</span>
+            case PENDENTE_PROCESSAMENTO:
+<span class="pc bpc" id="L121" title="3 of 4 branches missed.">                if (novoStatus != StatusPagamento.PROCESSADO_SUCESSO &amp;&amp;</span>
+                    novoStatus != StatusPagamento.PROCESSADO_FALHA) {
+<span class="nc" id="L123">                    throw new TransicaoStatusInvalidaException(statusAtual, novoStatus);</span>
+                }
+                break;
+                
+            case PROCESSADO_SUCESSO:
+            
+<span class="fc" id="L129">                throw new TransicaoStatusInvalidaException(</span>
+                    &quot;Pagamentos com status 'Processado com Sucesso' não podem ser alterados&quot;
+                );
+                
+            case PROCESSADO_FALHA:
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                if (novoStatus != StatusPagamento.PENDENTE_PROCESSAMENTO) {</span>
+<span class="fc" id="L135">                    throw new TransicaoStatusInvalidaException(statusAtual, novoStatus);</span>
+                }
+                break;
+                
+            default:
+<span class="nc" id="L140">                throw new TransicaoStatusInvalidaException(statusAtual, novoStatus);</span>
+        }
+<span class="fc" id="L142">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControladorPagamento.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.controlador</a> &gt; <span class="el_source">ControladorPagamento.java</span></div><h1>ControladorPagamento.java</h1><pre class="source lang-java linenums">package com.pagamento.controlador;
+
+import com.pagamento.dto.PagamentoRequestDTO;
+import com.pagamento.dto.PagamentoResponseDTO;
+import com.pagamento.dto.AtualizacaoStatusRequestDTO;
+import com.pagamento.enums.StatusPagamento;
+import com.pagamento.servico.ServicoPagamento;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/pagamentos&quot;)
+@Tag(name = &quot;Pagamentos&quot;, description = &quot;API para gerenciamento de pagamentos&quot;)
+public class ControladorPagamento {
+
+    private final ServicoPagamento servicoPagamento;
+
+<span class="fc" id="L27">    public ControladorPagamento(ServicoPagamento servicoPagamento) {</span>
+<span class="fc" id="L28">        this.servicoPagamento = servicoPagamento;</span>
+<span class="fc" id="L29">    }</span>
+
+    @PostMapping
+    @Operation(summary = &quot;Criar novo pagamento&quot;, description = &quot;Cria um novo pagamento com status 'Pendente de Processamento'&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Pagamento criado com sucesso&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
+    })
+    public ResponseEntity&lt;PagamentoResponseDTO&gt; criarPagamento(
+            @Valid @RequestBody PagamentoRequestDTO request) {
+        
+<span class="fc" id="L41">        PagamentoResponseDTO response = servicoPagamento.criarPagamento(request);</span>
+<span class="fc" id="L42">        return ResponseEntity.status(HttpStatus.CREATED).body(response);</span>
+    }
+
+    @GetMapping
+    @Operation(summary = &quot;Listar todos os pagamentos&quot;, description = &quot;Lista todos os pagamentos ativos&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de pagamentos recuperada com sucesso&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
+    })
+    public ResponseEntity&lt;List&lt;PagamentoResponseDTO&gt;&gt; listarTodosPagamentos() {
+<span class="fc" id="L52">        List&lt;PagamentoResponseDTO&gt; pagamentos = servicoPagamento.listarTodosPagamentos();</span>
+<span class="fc" id="L53">        return ResponseEntity.ok(pagamentos);</span>
+    }
+
+    @GetMapping(&quot;/buscar&quot;)
+    @Operation(summary = &quot;Buscar pagamentos com filtros&quot;, description = &quot;Busca pagamentos aplicando filtros opcionais&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Busca realizada com sucesso&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
+    })
+    public ResponseEntity&lt;List&lt;PagamentoResponseDTO&gt;&gt; buscarPagamentos(
+            @Parameter(description = &quot;Código do débito&quot;) @RequestParam(required = false) Integer codigoDebito,
+            @Parameter(description = &quot;CPF ou CNPJ do pagador&quot;) @RequestParam(required = false) String cpfCnpj,
+            @Parameter(description = &quot;Status do pagamento&quot;) @RequestParam(required = false) StatusPagamento status) {
+        
+<span class="fc" id="L67">        List&lt;PagamentoResponseDTO&gt; pagamentos = servicoPagamento.buscarPagamentos(codigoDebito, cpfCnpj, status);</span>
+<span class="fc" id="L68">        return ResponseEntity.ok(pagamentos);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Buscar pagamento por ID&quot;, description = &quot;Busca um pagamento específico pelo seu ID&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Pagamento encontrado&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Pagamento não encontrado&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
+    })
+    public ResponseEntity&lt;PagamentoResponseDTO&gt; obterPagamentoPorId(
+            @Parameter(description = &quot;ID do pagamento&quot;, required = true) @PathVariable Long id) {
+        
+<span class="fc" id="L81">        PagamentoResponseDTO pagamento = servicoPagamento.obterPagamentoPorId(id);</span>
+<span class="fc" id="L82">        return ResponseEntity.ok(pagamento);</span>
+    }
+
+    @PutMapping(&quot;/{id}/status&quot;)
+    @Operation(summary = &quot;Atualizar status do pagamento&quot;, description = &quot;Atualiza o status de um pagamento seguindo as regras de transição&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Status atualizado com sucesso&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Transição de status inválida&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Pagamento não encontrado&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
+    })
+    public ResponseEntity&lt;PagamentoResponseDTO&gt; atualizarStatusPagamento(
+            @Parameter(description = &quot;ID do pagamento&quot;, required = true) @PathVariable Long id,
+            @Valid @RequestBody AtualizacaoStatusRequestDTO request) {
+        
+<span class="fc" id="L97">        PagamentoResponseDTO pagamentoAtualizado = servicoPagamento.atualizarStatusPagamento(id, request.getStatus());</span>
+<span class="fc" id="L98">        return ResponseEntity.ok(pagamentoAtualizado);</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Excluir pagamento logicamente&quot;, description = &quot;Exclui logicamente um pagamento (apenas se estiver pendente)&quot;)
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Pagamento excluído com sucesso&quot;),
+        @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Não é possível excluir o pagamento&quot;),
+        @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Pagamento não encontrado&quot;),
+        @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; excluirPagamento(
+            @Parameter(description = &quot;ID do pagamento&quot;, required = true) @PathVariable Long id) {
+        
+<span class="fc" id="L112">        servicoPagamento.excluirPagamento(id);</span>
+<span class="fc" id="L113">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

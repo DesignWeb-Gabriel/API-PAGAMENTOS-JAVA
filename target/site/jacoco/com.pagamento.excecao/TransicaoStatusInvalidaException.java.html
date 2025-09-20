@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransicaoStatusInvalidaException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">API Payment</a> &gt; <a href="index.source.html" class="el_package">com.pagamento.excecao</a> &gt; <span class="el_source">TransicaoStatusInvalidaException.java</span></div><h1>TransicaoStatusInvalidaException.java</h1><pre class="source lang-java linenums">package com.pagamento.excecao;
+
+import com.pagamento.enums.StatusPagamento;
+
+public class TransicaoStatusInvalidaException extends RuntimeException {
+    
+    public TransicaoStatusInvalidaException(String mensagem) {
+<span class="fc" id="L8">        super(mensagem);</span>
+<span class="fc" id="L9">    }</span>
+    
+    public TransicaoStatusInvalidaException(StatusPagamento de, StatusPagamento para) {
+<span class="fc" id="L12">        super(String.format(&quot;Transição de status inválida: de '%s' para '%s'&quot;,</span>
+<span class="fc" id="L13">                          de.getDescricao(), para.getDescricao()));</span>
+<span class="fc" id="L14">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

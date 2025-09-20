@@ -1,0 +1,13 @@
+com\pagamento\servico\ServicoPagamentoTest$BuscaPagamentosTests.class
+com\pagamento\servico\ServicoPagamentoTest$ExclusaoPagamentoTests.class
+com\pagamento\servico\ServicoPagamentoTest$AtualizacaoStatusTests.class
+com\pagamento\controlador\ControladorPagamentoTest$BuscaPorIdTests.class
+com\pagamento\controlador\ControladorPagamentoTest$ListagemPagamentosTests.class
+com\pagamento\servico\ServicoPagamentoTest.class
+com\pagamento\controlador\ControladorPagamentoTest$BuscaComFiltrosTests.class
+com\pagamento\controlador\ControladorPagamentoTest$AtualizacaoStatusTests.class
+com\pagamento\servico\ServicoPagamentoTest$CriacaoPagamentoTests.class
+com\pagamento\servico\ServicoPagamentoTest$ListagemPagamentosTests.class
+com\pagamento\controlador\ControladorPagamentoTest$ExclusaoTests.class
+com\pagamento\controlador\ControladorPagamentoTest.class
+com\pagamento\controlador\ControladorPagamentoTest$CriacaoPagamentoTests.class
