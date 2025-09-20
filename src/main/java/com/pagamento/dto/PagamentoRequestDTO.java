@@ -37,7 +37,7 @@ public class PagamentoRequestDTO {
         this.valorPagamento = valorPagamento;
     }
 
-    // Getters e Setters
+    
     public Integer getCodigoDebito() {
         return codigoDebito;
     }

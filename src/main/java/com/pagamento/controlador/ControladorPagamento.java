@@ -35,6 +35,7 @@ public class ControladorPagamento {
         @ApiResponse(responseCode = "400", description = "Dados inválidos"),
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
+
     public ResponseEntity<PagamentoResponseDTO> criarPagamento(
             @Valid @RequestBody PagamentoRequestDTO request) {
         
@@ -48,6 +49,7 @@ public class ControladorPagamento {
         @ApiResponse(responseCode = "200", description = "Lista de pagamentos recuperada com sucesso"),
         @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
     })
+    
     public ResponseEntity<List<PagamentoResponseDTO>> listarTodosPagamentos() {
         List<PagamentoResponseDTO> pagamentos = servicoPagamento.listarTodosPagamentos();
         return ResponseEntity.ok(pagamentos);

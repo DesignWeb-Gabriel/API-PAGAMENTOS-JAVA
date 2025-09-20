@@ -43,7 +43,7 @@ public class PagamentoResponseDTO {
         return "**** **** **** " + ultimosQuatro;
     }
 
-    // Getters e Setters
+    
     public Long getId() {
         return id;
     }

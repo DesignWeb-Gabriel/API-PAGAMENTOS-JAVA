@@ -1,4 +1,3 @@
--- Dados de exemplo para testes
 INSERT INTO payments (codigo_debito, cpf_cnpj, metodo_pagamento, numero_cartao, valor_pagamento, status, data_criacao, data_atualizacao, ativo) VALUES
 (12345, '12345678901', 'PIX', NULL, 150.50, 'PENDENTE_PROCESSAMENTO', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),
 (67890, '98765432000123', 'BOLETO', NULL, 300.00, 'PENDENTE_PROCESSAMENTO', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, true),

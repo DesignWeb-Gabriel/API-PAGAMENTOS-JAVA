@@ -29,7 +29,7 @@ public class ErroResponseDTO {
         this.detalhes = detalhes;
     }
 
-    // Getters e Setters
+    
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
