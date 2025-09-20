@@ -8,7 +8,6 @@ import com.pagamento.excecao.PagamentoInvalidoException;
 import com.pagamento.excecao.PagamentoNaoEncontradoException;
 import com.pagamento.excecao.TransicaoStatusInvalidaException;
 import com.pagamento.repositorio.RepositorioPagamento;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +18,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class ServicoPagamento {
 
-    @Autowired
-    private RepositorioPagamento repositorioPagamento;
+    private final RepositorioPagamento repositorioPagamento;
 
-    /**
-     * Cria um novo pagamento
-     */
+    public ServicoPagamento(RepositorioPagamento repositorioPagamento) {
+        this.repositorioPagamento = repositorioPagamento;
+    }
+
+    
     public PagamentoResponseDTO criarPagamento(PagamentoRequestDTO request) {
         validarRequisicaoPagamento(request);
         
@@ -40,9 +40,7 @@ public class ServicoPagamento {
         return new PagamentoResponseDTO(pagamentoSalvo);
     }
 
-    /**
-     * Lista todos os pagamentos ativos
-     */
+    
     @Transactional(readOnly = true)
     public List<PagamentoResponseDTO> listarTodosPagamentos() {
         return repositorioPagamento.findByAtivoTrue()
@@ -51,9 +49,7 @@ public class ServicoPagamento {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Busca pagamentos com filtros
-     */
+    
     @Transactional(readOnly = true)
     public List<PagamentoResponseDTO> buscarPagamentos(Integer codigoDebito, String cpfCnpj, StatusPagamento status) {
         return repositorioPagamento.encontrarComFiltros(codigoDebito, cpfCnpj, status)
@@ -62,9 +58,7 @@ public class ServicoPagamento {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Busca pagamento por ID
-     */
+    
     @Transactional(readOnly = true)
     public PagamentoResponseDTO obterPagamentoPorId(Long id) {
         Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)
@@ -72,9 +66,7 @@ public class ServicoPagamento {
         return new PagamentoResponseDTO(pagamento);
     }
 
-    /**
-     * Atualiza o status de um pagamento
-     */
+    
     public PagamentoResponseDTO atualizarStatusPagamento(Long id, StatusPagamento novoStatus) {
         Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new PagamentoNaoEncontradoException(id));
@@ -87,9 +79,7 @@ public class ServicoPagamento {
         return new PagamentoResponseDTO(pagamentoAtualizado);
     }
 
-    /**
-     * Exclui logicamente um pagamento
-     */
+    
     public void excluirPagamento(Long id) {
         Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new PagamentoNaoEncontradoException(id));
@@ -105,11 +95,9 @@ public class ServicoPagamento {
         repositorioPagamento.save(pagamento);
     }
 
-    /**
-     * Valida a requisição de pagamento
-     */
+    
     private void validarRequisicaoPagamento(PagamentoRequestDTO request) {
-        // Valida se número do cartão é obrigatório para pagamentos com cartão
+        
         if (request.getMetodoPagamento().isPagamentoComCartao()) {
             if (request.getNumeroCartao() == null || request.getNumeroCartao().trim().isEmpty()) {
                 throw new PagamentoInvalidoException(
@@ -117,7 +105,7 @@ public class ServicoPagamento {
                 );
             }
         } else {
-            // Para outros métodos, não deve ter número de cartão
+           
             if (request.getNumeroCartao() != null && !request.getNumeroCartao().trim().isEmpty()) {
                 throw new PagamentoInvalidoException(
                     "Número do cartão não deve ser informado para pagamentos que não sejam com cartão"
@@ -126,9 +114,7 @@ public class ServicoPagamento {
         }
     }
 
-    /**
-     * Valida transições de status conforme regras de negócio
-     */
+    
     private void validarTransicaoStatus(StatusPagamento statusAtual, StatusPagamento novoStatus) {
         switch (statusAtual) {
             case PENDENTE_PROCESSAMENTO:
@@ -139,7 +125,7 @@ public class ServicoPagamento {
                 break;
                 
             case PROCESSADO_SUCESSO:
-                // Não pode ser alterado
+            
                 throw new TransicaoStatusInvalidaException(
                     "Pagamentos com status 'Processado com Sucesso' não podem ser alterados"
                 );
