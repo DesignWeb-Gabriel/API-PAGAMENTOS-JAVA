@@ -59,13 +59,13 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve criar pagamento com PIX com sucesso")
         void deveCriarPagamentoComPixComSucesso() {
-            // Arrange
+            
             when(repositorioPagamento.save(any(Pagamento.class))).thenReturn(pagamento);
 
-            // Act
+            
             PagamentoResponseDTO resultado = servicoPagamento.criarPagamento(pagamentoRequestDTO);
 
-            // Assert
+            
             assertThat(resultado).isNotNull();
             assertThat(resultado.getId()).isEqualTo(1L);
             assertThat(resultado.getCodigoDebito()).isEqualTo(12345);
@@ -80,7 +80,7 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve criar pagamento com cartão de crédito quando número do cartão é fornecido")
         void deveCriarPagamentoComCartaoCreditoComSucesso() {
-            // Arrange
+        
             pagamentoRequestDTO.setMetodoPagamento(MetodoPagamento.CARTAO_CREDITO);
             pagamentoRequestDTO.setNumeroCartao("1234567890123456");
             
@@ -90,10 +90,10 @@ class ServicoPagamentoTest {
             
             when(repositorioPagamento.save(any(Pagamento.class))).thenReturn(pagamentoCartao);
 
-            // Act
+            
             PagamentoResponseDTO resultado = servicoPagamento.criarPagamento(pagamentoRequestDTO);
 
-            // Assert
+            
             assertThat(resultado.getMetodoPagamento()).isEqualTo("cartao_credito");
             assertThat(resultado.getNumeroCartao()).isEqualTo("**** **** **** 3456");
         }
@@ -101,11 +101,11 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve lançar exceção quando número do cartão não é fornecido para pagamento com cartão")
         void deveLancarExcecaoQuandoNumeroCartaoNaoFornecidoParaCartao() {
-            // Arrange
+            
             pagamentoRequestDTO.setMetodoPagamento(MetodoPagamento.CARTAO_DEBITO);
             pagamentoRequestDTO.setNumeroCartao(null);
 
-            // Act & Assert
+            
             assertThatThrownBy(() -> servicoPagamento.criarPagamento(pagamentoRequestDTO))
                 .isInstanceOf(PagamentoInvalidoException.class)
                 .hasMessageContaining("Número do cartão é obrigatório para pagamentos com cartão");
@@ -114,11 +114,11 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve lançar exceção quando número do cartão é fornecido para pagamento sem cartão")
         void deveLancarExcecaoQuandoNumeroCartaoFornecidoParaPagamentoSemCartao() {
-            // Arrange
+            
             pagamentoRequestDTO.setMetodoPagamento(MetodoPagamento.PIX);
             pagamentoRequestDTO.setNumeroCartao("1234567890123456");
 
-            // Act & Assert
+           
             assertThatThrownBy(() -> servicoPagamento.criarPagamento(pagamentoRequestDTO))
                 .isInstanceOf(PagamentoInvalidoException.class)
                 .hasMessageContaining("Número do cartão não deve ser informado para pagamentos que não sejam com cartão");
@@ -132,17 +132,17 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve listar todos os pagamentos ativos")
         void deveListarTodosPagamentosAtivos() {
-            // Arrange
+            
             Pagamento pagamento2 = new Pagamento(54321, "98765432100", MetodoPagamento.BOLETO, null, new BigDecimal("200.00"));
             pagamento2.setId(2L);
             
             List<Pagamento> pagamentos = Arrays.asList(pagamento, pagamento2);
             when(repositorioPagamento.findByAtivoTrue()).thenReturn(pagamentos);
 
-            // Act
+            
             List<PagamentoResponseDTO> resultado = servicoPagamento.listarTodosPagamentos();
 
-            // Assert
+            
             assertThat(resultado).hasSize(2);
             assertThat(resultado.get(0).getId()).isEqualTo(1L);
             assertThat(resultado.get(1).getId()).isEqualTo(2L);
@@ -153,13 +153,13 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve retornar lista vazia quando não há pagamentos ativos")
         void deveRetornarListaVaziaQuandoNaoHaPagamentosAtivos() {
-            // Arrange
+            
             when(repositorioPagamento.findByAtivoTrue()).thenReturn(Arrays.asList());
 
-            // Act
+            
             List<PagamentoResponseDTO> resultado = servicoPagamento.listarTodosPagamentos();
 
-            // Assert
+            
             assertThat(resultado).isEmpty();
         }
     }
@@ -171,16 +171,16 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve buscar pagamentos com filtros")
         void deveBuscarPagamentosComFiltros() {
-            // Arrange
+            
             List<Pagamento> pagamentos = Arrays.asList(pagamento);
             when(repositorioPagamento.encontrarComFiltros(12345, "12345678901", StatusPagamento.PENDENTE_PROCESSAMENTO))
                 .thenReturn(pagamentos);
 
-            // Act
+            
             List<PagamentoResponseDTO> resultado = servicoPagamento.buscarPagamentos(
                 12345, "12345678901", StatusPagamento.PENDENTE_PROCESSAMENTO);
 
-            // Assert
+            
             assertThat(resultado).hasSize(1);
             assertThat(resultado.get(0).getId()).isEqualTo(1L);
             
@@ -190,13 +190,13 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve obter pagamento por ID")
         void deveObterPagamentoPorId() {
-            // Arrange
+            
             when(repositorioPagamento.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(pagamento));
 
-            // Act
+            
             PagamentoResponseDTO resultado = servicoPagamento.obterPagamentoPorId(1L);
 
-            // Assert
+            
             assertThat(resultado).isNotNull();
             assertThat(resultado.getId()).isEqualTo(1L);
             
@@ -206,10 +206,10 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve lançar exceção quando pagamento não é encontrado por ID")
         void deveLancarExcecaoQuandoPagamentoNaoEncontradoPorId() {
-            // Arrange
+            
             when(repositorioPagamento.findByIdAndAtivoTrue(999L)).thenReturn(Optional.empty());
 
-            // Act & Assert
+            
             assertThatThrownBy(() -> servicoPagamento.obterPagamentoPorId(999L))
                 .isInstanceOf(PagamentoNaoEncontradoException.class);
         }
@@ -222,7 +222,7 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve atualizar status de PENDENTE para PROCESSADO_SUCESSO")
         void deveAtualizarStatusDePendenteParaProcessadoSucesso() {
-            // Arrange
+            
             pagamento.setStatus(StatusPagamento.PENDENTE_PROCESSAMENTO);
             Pagamento pagamentoAtualizado = new Pagamento(12345, "12345678901", MetodoPagamento.PIX, null, new BigDecimal("100.50"));
             pagamentoAtualizado.setId(1L);
@@ -231,10 +231,10 @@ class ServicoPagamentoTest {
             when(repositorioPagamento.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(pagamento));
             when(repositorioPagamento.save(pagamento)).thenReturn(pagamentoAtualizado);
 
-            // Act
+            
             PagamentoResponseDTO resultado = servicoPagamento.atualizarStatusPagamento(1L, StatusPagamento.PROCESSADO_SUCESSO);
 
-            // Assert
+            
             assertThat(resultado.getStatus()).isEqualTo("Processado com Sucesso");
             verify(repositorioPagamento).save(pagamento);
         }
@@ -242,7 +242,7 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve atualizar status de PROCESSADO_FALHA para PENDENTE_PROCESSAMENTO")
         void deveAtualizarStatusDeProcessadoFalhaParaPendente() {
-            // Arrange
+            
             pagamento.setStatus(StatusPagamento.PROCESSADO_FALHA);
             Pagamento pagamentoAtualizado = new Pagamento(12345, "12345678901", MetodoPagamento.PIX, null, new BigDecimal("100.50"));
             pagamentoAtualizado.setId(1L);
@@ -251,21 +251,21 @@ class ServicoPagamentoTest {
             when(repositorioPagamento.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(pagamento));
             when(repositorioPagamento.save(pagamento)).thenReturn(pagamentoAtualizado);
 
-            // Act
+            
             PagamentoResponseDTO resultado = servicoPagamento.atualizarStatusPagamento(1L, StatusPagamento.PENDENTE_PROCESSAMENTO);
 
-            // Assert
+            
             assertThat(resultado.getStatus()).isEqualTo("Pendente de Processamento");
         }
 
         @Test
         @DisplayName("Deve lançar exceção ao tentar alterar status PROCESSADO_SUCESSO")
         void deveLancarExcecaoAoTentarAlterarStatusProcessadoSucesso() {
-            // Arrange
+            
             pagamento.setStatus(StatusPagamento.PROCESSADO_SUCESSO);
             when(repositorioPagamento.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(pagamento));
 
-            // Act & Assert
+            
             assertThatThrownBy(() -> servicoPagamento.atualizarStatusPagamento(1L, StatusPagamento.PROCESSADO_FALHA))
                 .isInstanceOf(TransicaoStatusInvalidaException.class)
                 .hasMessageContaining("Pagamentos com status 'Processado com Sucesso' não podem ser alterados");
@@ -274,11 +274,11 @@ class ServicoPagamentoTest {
         @Test
         @DisplayName("Deve lançar exceção para transição inválida")
         void deveLancarExcecaoParaTransicaoInvalida() {
-            // Arrange
+            
             pagamento.setStatus(StatusPagamento.PROCESSADO_FALHA);
             when(repositorioPagamento.findByIdAndAtivoTrue(1L)).thenReturn(Optional.of(pagamento));
 
-            // Act & Assert
+            
             assertThatThrownBy(() -> servicoPagamento.atualizarStatusPagamento(1L, StatusPagamento.PROCESSADO_SUCESSO))
                 .isInstanceOf(TransicaoStatusInvalidaException.class);
         }

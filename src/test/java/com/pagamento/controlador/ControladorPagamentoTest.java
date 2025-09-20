@@ -73,11 +73,10 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve criar pagamento com sucesso e retornar status 201")
         void deveCriarPagamentoComSucessoERetornarStatus201() throws Exception {
-            // Arrange
+            
             when(servicoPagamento.criarPagamento(any(PagamentoRequestDTO.class)))
                 .thenReturn(pagamentoResponseDTO);
-
-            // Act & Assert
+            
             mockMvc.perform(post("/api/pagamentos")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(pagamentoRequestDTO)))
@@ -95,11 +94,11 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar status 400 quando dados são inválidos")
         void deveRetornarStatus400QuandoDadosSaoInvalidos() throws Exception {
-            // Arrange
+            
             when(servicoPagamento.criarPagamento(any(PagamentoRequestDTO.class)))
                 .thenThrow(new PagamentoInvalidoException("Dados inválidos"));
 
-            // Act & Assert
+            
             mockMvc.perform(post("/api/pagamentos")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(pagamentoRequestDTO)))
@@ -110,7 +109,7 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve criar pagamento com cartão de crédito")
         void deveCriarPagamentoComCartaoCredito() throws Exception {
-            // Arrange
+            
             pagamentoRequestDTO.setMetodoPagamento(MetodoPagamento.CARTAO_CREDITO);
             pagamentoRequestDTO.setNumeroCartao("1234567890123456");
             
@@ -120,7 +119,7 @@ class ControladorPagamentoTest {
             when(servicoPagamento.criarPagamento(any(PagamentoRequestDTO.class)))
                 .thenReturn(pagamentoResponseDTO);
 
-            // Act & Assert
+            
             mockMvc.perform(post("/api/pagamentos")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(pagamentoRequestDTO)))
@@ -137,7 +136,7 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve listar todos os pagamentos com sucesso")
         void deveListarTodosPagamentosComSucesso() throws Exception {
-            // Arrange
+            
             PagamentoResponseDTO pagamento2 = new PagamentoResponseDTO();
             pagamento2.setId(2L);
             pagamento2.setCodigoDebito(54321);
@@ -149,7 +148,7 @@ class ControladorPagamentoTest {
             List<PagamentoResponseDTO> pagamentos = Arrays.asList(pagamentoResponseDTO, pagamento2);
             when(servicoPagamento.listarTodosPagamentos()).thenReturn(pagamentos);
 
-            // Act & Assert
+            
             mockMvc.perform(get("/api/pagamentos"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(2)))
@@ -162,10 +161,10 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar lista vazia quando não há pagamentos")
         void deveRetornarListaVaziaQuandoNaoHaPagamentos() throws Exception {
-            // Arrange
+            
             when(servicoPagamento.listarTodosPagamentos()).thenReturn(Arrays.asList());
 
-            // Act & Assert
+            
             mockMvc.perform(get("/api/pagamentos"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(0)));
@@ -179,12 +178,12 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve buscar pagamentos com filtros")
         void deveBuscarPagamentosComFiltros() throws Exception {
-            // Arrange
+            
             List<PagamentoResponseDTO> pagamentos = Arrays.asList(pagamentoResponseDTO);
             when(servicoPagamento.buscarPagamentos(12345, "12345678901", StatusPagamento.PENDENTE_PROCESSAMENTO))
                 .thenReturn(pagamentos);
 
-            // Act & Assert
+            
             mockMvc.perform(get("/api/pagamentos/buscar")
                     .param("codigoDebito", "12345")
                     .param("cpfCnpj", "12345678901")
@@ -199,12 +198,12 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve buscar pagamentos sem filtros")
         void deveBuscarPagamentosSemFiltros() throws Exception {
-            // Arrange
+            
             List<PagamentoResponseDTO> pagamentos = Arrays.asList(pagamentoResponseDTO);
             when(servicoPagamento.buscarPagamentos(null, null, null))
                 .thenReturn(pagamentos);
 
-            // Act & Assert
+            
             mockMvc.perform(get("/api/pagamentos/buscar"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", hasSize(1)));
@@ -220,10 +219,10 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve obter pagamento por ID com sucesso")
         void deveObterPagamentoPorIdComSucesso() throws Exception {
-            // Arrange
+            
             when(servicoPagamento.obterPagamentoPorId(1L)).thenReturn(pagamentoResponseDTO);
 
-            // Act & Assert
+            
             mockMvc.perform(get("/api/pagamentos/1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(1L))
@@ -235,11 +234,11 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar status 404 quando pagamento não é encontrado")
         void deveRetornarStatus404QuandoPagamentoNaoEncontrado() throws Exception {
-            // Arrange
+            
             when(servicoPagamento.obterPagamentoPorId(999L))
                 .thenThrow(new PagamentoNaoEncontradoException(999L));
 
-            // Act & Assert
+            
             mockMvc.perform(get("/api/pagamentos/999"))
                     .andExpect(status().isNotFound());
         }
@@ -252,7 +251,7 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve atualizar status do pagamento com sucesso")
         void deveAtualizarStatusDoPagamentoComSucesso() throws Exception {
-            // Arrange
+            
             AtualizacaoStatusRequestDTO requestDTO = new AtualizacaoStatusRequestDTO();
             requestDTO.setStatus(StatusPagamento.PROCESSADO_SUCESSO);
             
@@ -260,7 +259,7 @@ class ControladorPagamentoTest {
             when(servicoPagamento.atualizarStatusPagamento(1L, StatusPagamento.PROCESSADO_SUCESSO))
                 .thenReturn(pagamentoResponseDTO);
 
-            // Act & Assert
+            
             mockMvc.perform(put("/api/pagamentos/1/status")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(requestDTO)))
@@ -274,14 +273,14 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar status 400 para transição inválida")
         void deveRetornarStatus400ParaTransicaoInvalida() throws Exception {
-            // Arrange
+            
             AtualizacaoStatusRequestDTO requestDTO = new AtualizacaoStatusRequestDTO();
             requestDTO.setStatus(StatusPagamento.PROCESSADO_FALHA);
             
             when(servicoPagamento.atualizarStatusPagamento(1L, StatusPagamento.PROCESSADO_FALHA))
                 .thenThrow(new TransicaoStatusInvalidaException(StatusPagamento.PROCESSADO_SUCESSO, StatusPagamento.PROCESSADO_FALHA));
 
-            // Act & Assert
+            
             mockMvc.perform(put("/api/pagamentos/1/status")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(requestDTO)))
@@ -291,14 +290,14 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar status 404 quando pagamento não existe para atualização")
         void deveRetornarStatus404QuandoPagamentoNaoExisteParaAtualizacao() throws Exception {
-            // Arrange
+            
             AtualizacaoStatusRequestDTO requestDTO = new AtualizacaoStatusRequestDTO();
             requestDTO.setStatus(StatusPagamento.PROCESSADO_SUCESSO);
             
             when(servicoPagamento.atualizarStatusPagamento(999L, StatusPagamento.PROCESSADO_SUCESSO))
                 .thenThrow(new PagamentoNaoEncontradoException(999L));
 
-            // Act & Assert
+            
             mockMvc.perform(put("/api/pagamentos/999/status")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(requestDTO)))
@@ -313,10 +312,10 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve excluir pagamento com sucesso")
         void deveExcluirPagamentoComSucesso() throws Exception {
-            // Arrange
+            
             doNothing().when(servicoPagamento).excluirPagamento(1L);
 
-            // Act & Assert
+            
             mockMvc.perform(delete("/api/pagamentos/1"))
                     .andExpect(status().isNoContent());
 
@@ -326,11 +325,11 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar status 400 quando não é possível excluir")
         void deveRetornarStatus400QuandoNaoEPossivelExcluir() throws Exception {
-            // Arrange
+            
             doThrow(new PagamentoInvalidoException("Só é possível excluir pagamentos com status 'Pendente de Processamento'"))
                 .when(servicoPagamento).excluirPagamento(1L);
 
-            // Act & Assert
+            
             mockMvc.perform(delete("/api/pagamentos/1"))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.mensagem").value("Só é possível excluir pagamentos com status 'Pendente de Processamento'"));
@@ -339,11 +338,11 @@ class ControladorPagamentoTest {
         @Test
         @DisplayName("Deve retornar status 404 quando pagamento não existe para exclusão")
         void deveRetornarStatus404QuandoPagamentoNaoExisteParaExclusao() throws Exception {
-            // Arrange
+            
             doThrow(new PagamentoNaoEncontradoException(999L))
                 .when(servicoPagamento).excluirPagamento(999L);
 
-            // Act & Assert
+            
             mockMvc.perform(delete("/api/pagamentos/999"))
                     .andExpect(status().isNotFound());
         }

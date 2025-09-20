@@ -84,7 +84,6 @@ public class ServicoPagamento {
         Pagamento pagamento = repositorioPagamento.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new PagamentoNaoEncontradoException(id));
 
-        // Só pode excluir se estiver pendente de processamento
         if (pagamento.getStatus() != StatusPagamento.PENDENTE_PROCESSAMENTO) {
             throw new PagamentoInvalidoException(
                 "Só é possível excluir pagamentos com status 'Pendente de Processamento'"

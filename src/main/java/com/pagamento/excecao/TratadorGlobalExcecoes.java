@@ -80,7 +80,7 @@ public class TratadorGlobalExcecoes {
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
-
+    
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErroResponseDTO> tratarExcecaoViolacaoRestricao(
             ConstraintViolationException ex, WebRequest request) {

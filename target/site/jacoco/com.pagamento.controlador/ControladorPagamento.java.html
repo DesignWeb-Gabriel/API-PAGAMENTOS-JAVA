@@ -35,11 +35,12 @@ public class ControladorPagamento {
         @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;),
         @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
     })
+
     public ResponseEntity&lt;PagamentoResponseDTO&gt; criarPagamento(
             @Valid @RequestBody PagamentoRequestDTO request) {
         
-<span class="fc" id="L41">        PagamentoResponseDTO response = servicoPagamento.criarPagamento(request);</span>
-<span class="fc" id="L42">        return ResponseEntity.status(HttpStatus.CREATED).body(response);</span>
+<span class="fc" id="L42">        PagamentoResponseDTO response = servicoPagamento.criarPagamento(request);</span>
+<span class="fc" id="L43">        return ResponseEntity.status(HttpStatus.CREATED).body(response);</span>
     }
 
     @GetMapping
@@ -48,9 +49,10 @@ public class ControladorPagamento {
         @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista de pagamentos recuperada com sucesso&quot;),
         @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Erro interno do servidor&quot;)
     })
+    
     public ResponseEntity&lt;List&lt;PagamentoResponseDTO&gt;&gt; listarTodosPagamentos() {
-<span class="fc" id="L52">        List&lt;PagamentoResponseDTO&gt; pagamentos = servicoPagamento.listarTodosPagamentos();</span>
-<span class="fc" id="L53">        return ResponseEntity.ok(pagamentos);</span>
+<span class="fc" id="L54">        List&lt;PagamentoResponseDTO&gt; pagamentos = servicoPagamento.listarTodosPagamentos();</span>
+<span class="fc" id="L55">        return ResponseEntity.ok(pagamentos);</span>
     }
 
     @GetMapping(&quot;/buscar&quot;)
@@ -64,8 +66,8 @@ public class ControladorPagamento {
             @Parameter(description = &quot;CPF ou CNPJ do pagador&quot;) @RequestParam(required = false) String cpfCnpj,
             @Parameter(description = &quot;Status do pagamento&quot;) @RequestParam(required = false) StatusPagamento status) {
         
-<span class="fc" id="L67">        List&lt;PagamentoResponseDTO&gt; pagamentos = servicoPagamento.buscarPagamentos(codigoDebito, cpfCnpj, status);</span>
-<span class="fc" id="L68">        return ResponseEntity.ok(pagamentos);</span>
+<span class="fc" id="L69">        List&lt;PagamentoResponseDTO&gt; pagamentos = servicoPagamento.buscarPagamentos(codigoDebito, cpfCnpj, status);</span>
+<span class="fc" id="L70">        return ResponseEntity.ok(pagamentos);</span>
     }
 
     @GetMapping(&quot;/{id}&quot;)
@@ -78,8 +80,8 @@ public class ControladorPagamento {
     public ResponseEntity&lt;PagamentoResponseDTO&gt; obterPagamentoPorId(
             @Parameter(description = &quot;ID do pagamento&quot;, required = true) @PathVariable Long id) {
         
-<span class="fc" id="L81">        PagamentoResponseDTO pagamento = servicoPagamento.obterPagamentoPorId(id);</span>
-<span class="fc" id="L82">        return ResponseEntity.ok(pagamento);</span>
+<span class="fc" id="L83">        PagamentoResponseDTO pagamento = servicoPagamento.obterPagamentoPorId(id);</span>
+<span class="fc" id="L84">        return ResponseEntity.ok(pagamento);</span>
     }
 
     @PutMapping(&quot;/{id}/status&quot;)
@@ -94,8 +96,8 @@ public class ControladorPagamento {
             @Parameter(description = &quot;ID do pagamento&quot;, required = true) @PathVariable Long id,
             @Valid @RequestBody AtualizacaoStatusRequestDTO request) {
         
-<span class="fc" id="L97">        PagamentoResponseDTO pagamentoAtualizado = servicoPagamento.atualizarStatusPagamento(id, request.getStatus());</span>
-<span class="fc" id="L98">        return ResponseEntity.ok(pagamentoAtualizado);</span>
+<span class="fc" id="L99">        PagamentoResponseDTO pagamentoAtualizado = servicoPagamento.atualizarStatusPagamento(id, request.getStatus());</span>
+<span class="fc" id="L100">        return ResponseEntity.ok(pagamentoAtualizado);</span>
     }
 
     @DeleteMapping(&quot;/{id}&quot;)
@@ -109,8 +111,8 @@ public class ControladorPagamento {
     public ResponseEntity&lt;Void&gt; excluirPagamento(
             @Parameter(description = &quot;ID do pagamento&quot;, required = true) @PathVariable Long id) {
         
-<span class="fc" id="L112">        servicoPagamento.excluirPagamento(id);</span>
-<span class="fc" id="L113">        return ResponseEntity.noContent().build();</span>
+<span class="fc" id="L114">        servicoPagamento.excluirPagamento(id);</span>
+<span class="fc" id="L115">        return ResponseEntity.noContent().build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
