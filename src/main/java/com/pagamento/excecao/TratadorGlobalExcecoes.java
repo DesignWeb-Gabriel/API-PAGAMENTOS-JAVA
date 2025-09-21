@@ -133,8 +133,7 @@ public class TratadorGlobalExcecoes {
         
         Class<?> tipoRequerido = ex.getRequiredType();
         String nomeTipo = tipoRequerido != null ? tipoRequerido.getSimpleName() : "desconhecido";
-        String mensagem = String.format("Parâmetro '%s' deve ser do tipo %s", 
-                                     ex.getName(), nomeTipo);
+        String mensagem = String.format("Parâmetro '%s' deve ser do tipo %s", ex.getName(), nomeTipo);
         
         ErroResponseDTO erro = new ErroResponseDTO(
             HttpStatus.BAD_REQUEST.value(),
